@@ -1,6 +1,6 @@
 package Dist::Dzpl::Plugin::Hook::FilePruner;
 BEGIN {
-  $Dist::Dzpl::Plugin::Hook::FilePruner::VERSION = '0.0001';
+  $Dist::Dzpl::Plugin::Hook::FilePruner::VERSION = '0.0010';
 }
 
 use Moose;
@@ -26,7 +26,7 @@ Dist::Dzpl::Plugin::Hook::FilePruner
 
 =head1 VERSION
 
-version 0.0001
+version 0.0010
 
 =head1 AUTHOR
 

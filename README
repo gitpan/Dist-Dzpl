@@ -3,7 +3,7 @@ NAME
     Dist::Zilla
 
 VERSION
-    version 0.0001
+    version 0.0010
 
 SYNOPSIS
     Below is an example file that would exist in your distribution root,

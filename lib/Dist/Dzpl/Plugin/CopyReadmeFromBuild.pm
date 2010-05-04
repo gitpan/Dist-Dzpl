@@ -1,6 +1,6 @@
 package Dist::Dzpl::Plugin::CopyReadmeFromBuild;
 BEGIN {
-  $Dist::Dzpl::Plugin::CopyReadmeFromBuild::VERSION = '0.0001';
+  $Dist::Dzpl::Plugin::CopyReadmeFromBuild::VERSION = '0.0010';
 }
 
 use Moose;
@@ -39,7 +39,7 @@ Dist::Dzpl::Plugin::CopyReadmeFromBuild
 
 =head1 VERSION
 
-version 0.0001
+version 0.0010
 
 =head1 AUTHOR
 

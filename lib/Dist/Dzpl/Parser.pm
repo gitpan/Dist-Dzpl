@@ -1,6 +1,6 @@
 package Dist::Dzpl::Parser;
 BEGIN {
-  $Dist::Dzpl::Parser::VERSION = '0.0001';
+  $Dist::Dzpl::Parser::VERSION = '0.0010';
 }
 
 use strict;
@@ -136,7 +136,7 @@ Dist::Dzpl::Parser
 
 =head1 VERSION
 
-version 0.0001
+version 0.0010
 
 =head1 AUTHOR
 

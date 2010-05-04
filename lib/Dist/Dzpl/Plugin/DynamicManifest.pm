@@ -1,6 +1,6 @@
 package Dist::Dzpl::Plugin::DynamicManifest;
 BEGIN {
-  $Dist::Dzpl::Plugin::DynamicManifest::VERSION = '0.0001';
+  $Dist::Dzpl::Plugin::DynamicManifest::VERSION = '0.0010';
 }
 
 use Moose;
@@ -35,7 +35,7 @@ Dist::Dzpl::Plugin::DynamicManifest
 
 =head1 VERSION
 
-version 0.0001
+version 0.0010
 
 =head1 AUTHOR
 

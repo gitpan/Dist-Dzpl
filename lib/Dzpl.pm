@@ -1,6 +1,6 @@
 package Dzpl;
 BEGIN {
-  $Dzpl::VERSION = '0.0001';
+  $Dzpl::VERSION = '0.0010';
 }
 
 use strict;
@@ -78,7 +78,7 @@ Dzpl
 
 =head1 VERSION
 
-version 0.0001
+version 0.0010
 
 =head1 AUTHOR
 

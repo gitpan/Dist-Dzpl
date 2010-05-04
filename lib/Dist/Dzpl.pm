@@ -1,6 +1,6 @@
 package Dist::Dzpl;
 BEGIN {
-  $Dist::Dzpl::VERSION = '0.0001';
+  $Dist::Dzpl::VERSION = '0.0010';
 }
 # ABSTRACT: An alternative configuration format (.pl)  and invoker for Dist::Zilla 
 
@@ -125,7 +125,7 @@ Dist::Dzpl - An alternative configuration format (.pl)  and invoker for Dist::Zi
 
 =head1 VERSION
 
-version 0.0001
+version 0.0010
 
 =head1 SYNOPSIS
 
