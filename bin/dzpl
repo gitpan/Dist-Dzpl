@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+my @try = qw/ dzpl dz.pl dist.pl /;
+my $found;
+
+for ( @try ) {
+    -e $_ and ( $found = $_ ) and last;
+}
+
+die "Could not find ", join( ' or ', map { "\"$_\"" } @try ), "\n" unless $found;
+die "Could not read \"$found\"\n" unless -r $found;
+
+do $found;
