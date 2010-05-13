@@ -1,6 +1,6 @@
 package Dist::Dzpl;
 BEGIN {
-  $Dist::Dzpl::VERSION = '0.0010';
+  $Dist::Dzpl::VERSION = '0.0020';
 }
 # ABSTRACT: An alternative configuration format (.pl)  and invoker for Dist::Zilla 
 
@@ -18,10 +18,54 @@ use Dist::Zilla::Chrome::Term;
 use Dist::Zilla::Util;
 use Class::MOP;
 use Moose::Autobox;
+use Carp;
 
 has zilla => qw/ is ro required 1 isa Dist::Zilla /;
 
-sub prepare {
+sub from_file {
+    my $self = shift;
+    my $file = shift;
+    $file = './' unless defined $file;
+
+    my $source;
+    if ( -f $file ) {
+        $source = $file;
+    }
+    elsif ( -d $file ) {
+        my @try = qw/ dzpl dz.pl dist.pl /;
+        for ( map { "$file/$_" } @try ) {
+            -e $_ and ( $source = $_ ) and last;
+        }
+        croak "Could not find ", join( ' or ', map { "\"$_\"" } @try ), " in $file" unless $source;
+    }
+    else {
+        croak "Missing file";
+    }
+    croak "Could not read \"$source\"" unless -r $source;
+
+    my $dzpl = $self->_from_file_sandbox( $source );
+    die "Error while loading $source: $@" if $@;
+    return $dzpl;
+}
+
+sub _from_file_sandbox {
+    my $self = shift;
+    my $file = shift;
+
+    my $package = $file;
+    $package =~ s/([^A-Za-z0-9_])/sprintf("_%2x", unpack("C", $1))/eg;
+
+    return eval sprintf <<'_END_', $package;
+package Dist::Dzpl::Sandbox::%s;
+{
+    require Dzpl;
+    do $file;
+    Dzpl->dzpl_from_package( __PACKAGE__ ) or die $@;
+}
+_END_
+}
+
+sub from_arguments {
     my $self = shift;
     my $zilla = Dist::Dzpl::Parser->parse( @_ );
     return __PACKAGE__->new( zilla => $zilla );
@@ -31,11 +75,30 @@ sub run {
     my $self = shift;
     my @arguments = @_;
 
-    $self->zilla->_setup_default_plugins;
+    my $zilla = $self->zilla;
+    # TODO This should only be run once...
+    $zilla->_setup_default_plugins;
 
     return unless @arguments;
-    my $command = shift @arguments;
-    $self->zilla->$command;
+
+    my $do = shift @arguments;
+
+    if ( $do eq 'dzil' ) {
+        require Dist::Zilla::App;
+        my $app = Dist::Zilla::App->new;
+        $app->{__chrome__} = $zilla->chrome;
+        $app->{__PACKAGE__}{zilla} = $zilla; # Cover case 1...
+        $app->{'Dist::Zilla::App'}{zilla} = $zilla; # ...and case 2
+        {
+            local @ARGV = @arguments;
+            $app->run;
+        }
+    }
+    else {
+        die "Dist::Zilla cannot do \"$do\"" unless $zilla->can( $do );
+        warn "Dropping arguments [@arguments]" if @arguments;
+        return $zilla->$do;
+    }
 }
 
 sub _include_plugin_bundle {
@@ -47,14 +110,13 @@ sub _include_plugin_bundle {
 
     Class::MOP::load_class( $package );
 
-    my $bundle = $package->new( 
+    my @bundle = $package->bundle_config({ 
         name => $name,
         zilla => $self->zilla,
         payload => $payload,
-    );
-    $bundle->configure;
+    });
 
-    for my $plugin ( $bundle->plugins->flatten ) {
+    for my $plugin ( @bundle ) {
         my ( $name, $package, $payload ) = @$plugin;
         next if $filter && $package =~ $filter;
         $self->_include_plugin( $name, $package, $payload );
@@ -69,10 +131,21 @@ sub _include_plugin {
 
     Class::MOP::load_class( $package );
 
+    my @arguments;
+    if ( ref $payload eq 'HASH' ) {
+        push @arguments, payload => $payload;
+    }
+    elsif ( ref $payload eq 'ARRAY' ) {
+        push @arguments, @$payload;
+    }
+    elsif ( defined $payload ) {
+        die "Invalid payload ($payload)";
+    }
+
     $self->zilla->plugins->push( $package->new( 
         plugin_name => $name,
-        payload => $package,
         zilla => $self->zilla,
+        @arguments,
     ) );
 }
 
@@ -87,7 +160,7 @@ sub plugin {
         Class::MOP::load_class( $package );
         my $includer = '_include_plugin';
         my $payload = {};
-        $payload = shift if ref $_[0] eq 'HASH';
+        $payload = shift if ref $_[0] eq 'HASH' || ref $_[0] eq 'ARRAY';
         my @arguments = ( $name, $package, $payload );
         if ( $package->does( 'Dist::Zilla::Role::PluginBundle' ) ) {
             $includer = '_include_plugin_bundle';
@@ -125,7 +198,7 @@ Dist::Dzpl - An alternative configuration format (.pl)  and invoker for Dist::Zi
 
 =head1 VERSION
 
-version 0.0010
+version 0.0020
 
 =head1 SYNOPSIS
 

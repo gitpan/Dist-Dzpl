@@ -25,16 +25,13 @@ my %WriteMakefileArgs = (
                        'EXE_FILES' => [
                                         'bin/dzpl'
                                       ],
-                       'VERSION' => '0.0010',
+                       'VERSION' => '0.0020',
                        'PREREQ_PM' => {
-                                        'Dist::Zilla::Plugin::PodWeaver' => '0',
                                         'Class::MOP' => '0',
-                                        'Moose::Autobox' => '0',
-                                        'Dist::Zilla::Plugin::ReadmeFromPod' => '0',
-                                        'Dist::Zilla::Plugin::PkgVersion' => '0',
                                         'Dist::Zilla' => '0',
-                                        'Moose' => '0',
-                                        'Dist::Zilla::PluginBundle::Basic' => '0'
+                                        'Moose::Autobox' => '0',
+                                        'Dist::Zilla::PluginBundle::ROKR' => '0',
+                                        'Moose' => '0'
                                       },
                        'LICENSE' => 'perl'
                      );

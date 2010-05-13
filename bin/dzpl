@@ -1,13 +1,7 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
-my @try = qw/ dzpl dz.pl dist.pl /;
-my $found;
+use strict;
+use warnings;
 
-for ( @try ) {
-    -e $_ and ( $found = $_ ) and last;
-}
-
-die "Could not find ", join( ' or ', map { "\"$_\"" } @try ), "\n" unless $found;
-die "Could not read \"$found\"\n" unless -r $found;
-
-do $found;
+use Dist::Dzpl::App;
+Dist::Dzpl::App->run( undef, @ARGV );

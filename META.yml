@@ -6,7 +6,7 @@ build_requires:
   Test::Most: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.31
-generated_by: 'Dist::Zilla version 2.101240'
+generated_by: 'Dist::Zilla version 2.101170'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -16,10 +16,7 @@ recommends: {}
 requires:
   Class::MOP: 0
   Dist::Zilla: 0
-  Dist::Zilla::Plugin::PkgVersion: 0
-  Dist::Zilla::Plugin::PodWeaver: 0
-  Dist::Zilla::Plugin::ReadmeFromPod: 0
-  Dist::Zilla::PluginBundle::Basic: 0
+  Dist::Zilla::PluginBundle::ROKR: 0
   Moose: 0
   Moose::Autobox: 0
-version: 0.0010
+version: 0.0020

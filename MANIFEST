@@ -5,9 +5,8 @@ Makefile.PL
 README
 bin/dzpl
 lib/Dist/Dzpl.pm
+lib/Dist/Dzpl/App.pm
 lib/Dist/Dzpl/Parser.pm
-lib/Dist/Dzpl/Plugin/CopyReadmeFromBuild.pm
-lib/Dist/Dzpl/Plugin/DynamicManifest.pm
 lib/Dist/Dzpl/Plugin/Hook/FilePruner.pm
 lib/Dist/Dzpl/Plugin/Prune.pm
 lib/Dzpl.pm

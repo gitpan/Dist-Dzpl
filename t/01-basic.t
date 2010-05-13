@@ -8,7 +8,7 @@ plan 'no_plan';
 
 use Dist::Dzpl;
 
-my $dzpl = Dist::Dzpl->prepare(
+my $dzpl = Dist::Dzpl->from_arguments(
     name => 'Dist-Dzpl',
     version => '0.001',
     author => 'J.A. Perl Hacker <japh@example.org>',
@@ -19,5 +19,3 @@ my $dzpl = Dist::Dzpl->prepare(
 is( $dzpl->zilla->name, 'Dist-Dzpl' );
 is( $dzpl->zilla->version, '0.001' );
 is( $dzpl->zilla->copyright_holder, 'J.A. Perl Hacker' );
-
-__END__

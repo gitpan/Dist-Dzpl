@@ -1,7 +1,4 @@
 package Dzpl;
-BEGIN {
-  $Dzpl::VERSION = '0.0010';
-}
 
 use strict;
 use warnings;
@@ -14,82 +11,86 @@ BEGIN {
 
 use Dist::Dzpl;
 
-our $dzpl;
+our %DZPL;
 
 sub import {
+    my $package = caller;
     my @arguments = splice @_, 1;
 
     strict->import;
     warnings->import;
 
-    die "Already initialized Dist::Dzpl!" if $dzpl;
-    $dzpl ||= Dist::Dzpl->prepare( @arguments );
+    if ( $DZPL{$package} ) {
+        warn "Dzpl: Already initialized Dist::Dzpl for package ($package)!\n";
+        return;
+    }
 
+    $DZPL{$package} = Dist::Dzpl->from_arguments( @arguments );
     
     @_ = ( $_[0] );
     goto &Exporter::import;
 }
 
+sub dzpl_from_package {
+    my ( $self, $package ) = @_;
+    
+    die "Missing package" unless $package;
+    die "Dist::Dzpl not initialized for package ($package)" unless my $dzpl = $DZPL{$package};
+    return $dzpl;
+}
+
+sub _dzpl_from_package ($) {
+    __PACKAGE__->dzpl_from_package( @_ );
+}
+
 sub plugin {
-    $dzpl->plugin( @_ );
+    my $package = caller;
+    _dzpl_from_package( $package )->plugin( @_ );
 }
 
 sub prune (&) {
-    $dzpl->prune( @_ );
+    my $package = caller;
+    _dzpl_from_package( $package )->prune( @_ );
 }
 
 sub run (;&) {
 
-    $dzpl->zilla->_setup_default_plugins;
+    return; # Do nothing until we clean up this interface
 
-    my $default = sub {
-        my @arguments = @_;
-        return unless @arguments;
-        my $command = shift @arguments;
-        if ( $command eq 'dzil' ) {
-            require Dist::Zilla::App;
-            my $app = Dist::Zilla::App->new;
-            $app->{__chrome__} = $dzpl->zilla->chrome;
-            $app->{__PACKAGE__}{zilla} = $dzpl->zilla;
-            local @ARGV = @arguments;
-            $app->run;
-        }
-        else {
-            $dzpl->zilla->$command;
-        }
-    };
+#    $dzpl->zilla->_setup_default_plugins;
 
-    if ( my $run = shift ) {
-        $run->( $default, $dzpl );
-    }
-    else {
-        $default->( @ARGV );
+#    my $default = sub {
+#        my @arguments = @_;
+#        return unless @arguments;
+#        my $command = shift @arguments;
+#        if ( $command eq 'dzil' ) {
+#            require Dist::Zilla::App;
+#            my $app = Dist::Zilla::App->new;
+#            $app->{__chrome__} = $dzpl->zilla->chrome;
+#            $app->{__PACKAGE__}{zilla} = $dzpl->zilla; # Cover case 1...
+#            $app->{'Dist::Zilla::App'}{zilla} = $dzpl->zilla; # ...and case 2
+#            local @ARGV = @arguments;
+#            $app->run;
+#        }
+#        else {
+#            $dzpl->zilla->$command;
+#        }
+#    };
+
+#    if ( my $run = shift ) {
+#        $run->( $default, $dzpl );
+#    }
+#    else {
+#        $default->( @ARGV );
+#    }
+}
+
+END {
+    if ( my $dzpl = $DZPL{main} ) {
+        # This *might* be sketchy...
+        require Dist::Dzpl::App;
+        Dist::Dzpl::App->run( $dzpl, @ARGV );
     }
 }
 
 1;
-
-__END__
-=pod
-
-=head1 NAME
-
-Dzpl
-
-=head1 VERSION
-
-version 0.0010
-
-=head1 AUTHOR
-
-  Robert Krimen <robertkrimen@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is copyright (c) 2010 by Robert Krimen.
-
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
-
-=cut
-

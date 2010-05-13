@@ -2,9 +2,9 @@ TODO:
     - Parse 'requires', 'recommends', 'prefers'
     - Search for dzpl/dz.pl/dist.pl
 
-0.0010 Tuesday May 04 09:31:29 PDT 2010:
-    - Bump to a more sane version number
-    - Added some useful Dist::Zilla::Plugin::* to dependencies
+0.0010 Saturday May 08 11:49:13 PDT 2010:
+    - Handle bundles _correctly_ (via bundle_config)
+    - Include Dist::Zilla, etc, as a prerequisite
 
-0.0001 Monday May 03 2010:
+0.0001:
     - Initial release
